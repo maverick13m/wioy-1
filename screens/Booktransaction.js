@@ -87,3 +87,4 @@ export default class TransactionScreen extends React.Component {
       fontSize: 20,
     }
   });
+  
