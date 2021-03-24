@@ -1,5 +1,6 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet
+,TextInput ,Image} from 'react-native';
 import * as Permissions from 'expo-permissions';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
@@ -52,16 +53,37 @@ export default class TransactionScreen extends React.Component {
       else if (buttonState === "normal"){
         return(
           <View style={styles.container}>
+            <View>
+            <Image
+            style = {{width:200,height:200}}
+            source = {require("../assets/booklogo.jpg")}
+            />
+            <Text>wily</Text>
+          </View>
+              <View>
+                <TextInput 
+                style={styles.inputBox}
+                placeholder="Book ID"
+                />
+                <TouchableOpacity
+                style={styles.scanButton}
+                >
+                  <Text>SCAN</Text>
+                </TouchableOpacity>
+              </View>
 
-          <Text style={styles.displayText}>{
-            hasCameraPermissions===true ? this.state.scannedData: "Request Camera Permission"
-          }</Text>     
-
-          <TouchableOpacity
-            onPress={this.getCameraPermissions}
-            style={styles.scanButton}>
-            <Text style={styles.buttonText}>Scan QR Code</Text>
-          </TouchableOpacity>
+              <View>
+                <TextInput 
+                style={styles.inputBox}
+                placeholder="Student ID"
+                />
+                <TouchableOpacity
+                style={styles.scanButton}
+                >
+                  <Text>SCAN</Text>
+                </TouchableOpacity>
+              </View>
+              
         </View>
         );
       }
@@ -85,5 +107,12 @@ export default class TransactionScreen extends React.Component {
     },
     buttonText:{
       fontSize: 20,
+    },
+    inputBox:{
+
+    },
+    scanButton:{
+      
     }
+
   });
