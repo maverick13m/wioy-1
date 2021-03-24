@@ -23,10 +23,16 @@ const TabNavigator = createBottomTabNavigator({
     tabBatIcon:({})=>{
       const routeName= navigation.state.routeName
       if(routeName ==="Transaction"){
-        return(<Image/>)
+        return(<Image
+        source={require("./assets/book.png")}
+        style={{width:50,height:50}}
+        />)
       }
       else if(routeName ==="Search"){
-        return(<Image/>)
+        return(<Image
+          source={require("./assets/searchingbook.png")}
+          style={{width:50,height:50}}
+        />)
       }
     }
   })
