@@ -53,30 +53,30 @@ export default class TransactionScreen extends React.Component {
       else if (buttonState === "normal"){
         return(
           <View style={styles.container}>
-            <View>
+          <View>
             <Image
-            style = {{width:200,height:200}}
-            source = {require("../assets/booklogo.jpg")}
+              style = {{width:200,height:200}}
+              source = {require("../assets/booklogo.jpg")}
             />
-            <Text>wily</Text>
+            <Text style={{fontSize:30,textAlign:"center"}}>wily</Text>
           </View>
-              <View>
-                <TextInput 
-                style={styles.inputBox}
-                placeholder="Book ID"
-                />
-                <TouchableOpacity
-                style={styles.scanButton}
-                >
-                  <Text>SCAN</Text>
-                </TouchableOpacity>
-              </View>
+          <View style={styles.inputView}>
+            <TextInput 
+              style={styles.inputBox}
+              placeholder="Book ID"
+            />
+            <TouchableOpacity
+              style={styles.scanButton}
+             >
+             <Text>SCAN</Text>
+           </TouchableOpacity>
+          </View>
 
-              <View>
-                <TextInput 
-                style={styles.inputBox}
-                placeholder="Student ID"
-                />
+          <View>
+            <TextInput 
+            style={styles.inputBox}
+            placeholder="Student ID"
+            />
                 <TouchableOpacity
                 style={styles.scanButton}
                 >
@@ -105,14 +105,28 @@ export default class TransactionScreen extends React.Component {
       padding: 10,
       margin: 10
     },
+  
     buttonText:{
-      fontSize: 20,
+      fontSize: 15,
+      textAlign: 'center',
+      marginTop: 10
+    },
+    inputView:{
+      flexDirection: 'row',
+      margin: 20
     },
     inputBox:{
-
+      width: 200,
+      height: 40,
+      borderWidth: 1.5,
+      borderRightWidth: 0,
+      fontSize: 20
     },
     scanButton:{
-      
+      backgroundColor: '#66BB6A',
+      width: 50,
+      borderWidth: 1.5,
+      borderLeftWidth: 0
     }
 
   });
