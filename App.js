@@ -20,7 +20,7 @@ const TabNavigator = createBottomTabNavigator({
   Transaction:{screen:TransactionScreen},
   Search:{screen:SearchScreen},
   defaultNavigationOptions: ({navigation})=>({
-    tabBatIcon:({})=>{
+    tabBarIcon:({})=>{
       const routeName= navigation.state.routeName
       if(routeName ==="Transaction"){
         return(<Image
