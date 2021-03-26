@@ -51,7 +51,11 @@ export default class TransactionScreen extends React.Component {
 
     handleTransaction=async()=>{
       var tran 
-      db.collection("books")
+      db.collection("books").doc(this.state.scannedBookId)
+      .get()
+      .then((doc)=>{
+        console.log(doc.data())
+      })
       
     }
 
