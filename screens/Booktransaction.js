@@ -2,6 +2,8 @@ import React from 'react';
 import { Text, View, TouchableOpacity, TextInput, Image, StyleSheet } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import * as firebase from firebase;
+import db from '../config';
 
 export default class TransactionScreen extends React.Component {
     constructor(){
@@ -44,7 +46,12 @@ export default class TransactionScreen extends React.Component {
           scannedStudentId: data,
           buttonState: 'normal'
         });
-      }
+      } 
+    }
+
+    handleTransaction=async()=>{
+      var tran 
+      db.collection("books")
       
     }
 
@@ -96,6 +103,13 @@ export default class TransactionScreen extends React.Component {
               }}>
               <Text style={styles.buttonText}>Scan</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.submitButton}
+              onPress={()=>{this.handleTransaction()}}>
+              <Text style={styles.buttonText}>SUBMIT (: </Text>
+            </TouchableOpacity>
+
             </View>
           </View>
         );
@@ -137,6 +151,12 @@ export default class TransactionScreen extends React.Component {
     scanButton:{
       backgroundColor: '#66BB6A',
       width: 50,
+      borderWidth: 1.5,
+      borderLeftWidth: 0
+    },
+    scanButton:{
+      backgroundColor: "purple",
+      width: 80,
       borderWidth: 1.5,
       borderLeftWidth: 0
     }
