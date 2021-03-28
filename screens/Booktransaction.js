@@ -1,9 +1,16 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, TextInput, Image, StyleSheet } from 'react-native';
+import { Text,
+   View,
+   TouchableOpacity,
+   TextInput,
+   Image,
+   StyleSheet,
+  KeyboardAvoidingView ,
+ToastAndroid,Alert} from 'react-native';
 import * as Permissions from 'expo-permissions';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-import * as firebase from firebase;
-import db from '../config';
+import * as firebase from 'firebase'
+import db from '../config.js'
 
 export default class TransactionScreen extends React.Component {
     constructor(){
@@ -14,7 +21,7 @@ export default class TransactionScreen extends React.Component {
         scannedBookId: '',
         scannedStudentId:'',
         buttonState: 'normal',
-        transactionMessage:"",
+        transactionMessage: ''
       }
     }
 
@@ -47,31 +54,72 @@ export default class TransactionScreen extends React.Component {
           scannedStudentId: data,
           buttonState: 'normal'
         });
-      } 
-    }
-
-    handleTransaction=async()=>{
-      var tran 
-      db.collection("books").doc(this.state.scannedBookId)
-      .get()
-      .then((doc)=>{
-        console.log(doc.data())
-        var  book =doc.data()
-        if(book.bookAvalibility){
-            this.initiateBookIssue()
-              tran="book Issued"   
-        } 
-        else{
-          this.initiateBookReturn()
-              tran="book Returned" 
-
-        }
-            })
-            this.setState({transactionMessage:tran})
+      }
       
     }
 
-    
+    initiateBookIssue = async()=>{
+      //add a transaction
+      db.collection("transactions").add({
+        'studentId': this.state.scannedStudentId,
+        'bookId' : this.state.scannedBookId,
+        'date' : firebase.firestore.Timestamp.now().toDate(),
+        'transactionType': "Issue"
+      })
+      //change book status
+      db.collection("books").doc(this.state.scannedBookId).update({
+        'bookAvailability': false
+      })
+      //change number  of issued books for student
+      db.collection("students").doc(this.state.scannedStudentId).update({
+        'numberOfBooksIssued': firebase.firestore.FieldValue.increment(1)
+      })
+    }
+
+    initiateBookReturn = async()=>{
+      //add a transaction
+      db.collection("transactions").add({
+        'studentId': this.state.scannedStudentId,
+        'bookId' : this.state.scannedBookId,
+        'date' : firebase.firestore.Timestamp.now().toDate(),
+        'transactionType': "Return"
+      })
+      //change book status
+      db.collection("books").doc(this.state.scannedBookId).update({
+        'bookAvailability': true
+      })
+      //change number  of issued books for student
+      db.collection("students").doc(this.state.scannedStudentId).update({
+        'numberOfBooksIssued': firebase.firestore.FieldValue.increment(-1)
+      })
+    }
+
+
+    handleTransaction = async()=>{
+      var transactionMessage
+      db.collection("books").doc(this.state.scannedBookId).get()
+      .then((doc)=>{
+          //snapshot.forEach((doc)=>{
+            var book = doc.data()
+            if(book.bookAvailability){
+                this.initiateBookIssue();       
+                transactionMessage = "Book Issued"
+                ToastAndroid.show(transactionMessage, ToastAndroid.SHORT);
+                // Alert.alert(transactionMessage)
+            }
+            else{
+                this.initiateBookReturn();
+                transactionMessage = "Book Returned"
+                ToastAndroid.show(transactionMessage, ToastAndroid.SHORT);
+                // Alert.alert(transactionMessage)
+            }
+      })
+
+      this.setState({
+        transactionMessage: transactionMessage
+      })
+    }
+
     render() {
       const hasCameraPermissions = this.state.hasCameraPermissions;
       const scanned = this.state.scanned;
@@ -88,7 +136,7 @@ export default class TransactionScreen extends React.Component {
 
       else if (buttonState === "normal"){
         return(
-          <View style={styles.container}>
+          <KeyboardAvoidingView  style={styles.container} behavior="padding" enabled>
             <View>
               <Image
                 source={require("../assets/booklogo.jpg")}
@@ -99,6 +147,7 @@ export default class TransactionScreen extends React.Component {
             <TextInput 
               style={styles.inputBox}
               placeholder="Book Id"
+              onChangeText={text =>this.setState({scannedBookId:text})}
               value={this.state.scannedBookId}/>
             <TouchableOpacity 
               style={styles.scanButton}
@@ -108,10 +157,12 @@ export default class TransactionScreen extends React.Component {
               <Text style={styles.buttonText}>Scan</Text>
             </TouchableOpacity>
             </View>
+
             <View style={styles.inputView}>
             <TextInput 
               style={styles.inputBox}
               placeholder="Student Id"
+              onChangeText ={text => this.setState({scannedStudentId:text})}
               value={this.state.scannedStudentId}/>
             <TouchableOpacity 
               style={styles.scanButton}
@@ -120,15 +171,18 @@ export default class TransactionScreen extends React.Component {
               }}>
               <Text style={styles.buttonText}>Scan</Text>
             </TouchableOpacity>
-
-            <TouchableOpacity 
-              style={styles.submitButton}
-              onPress={()=>{this.handleTransaction()}}>
-              <Text style={styles.buttonText}>SUBMIT (: </Text>
-            </TouchableOpacity>
-
             </View>
-          </View>
+            <TouchableOpacity
+              style={styles.submitButton}
+              onPress={async()=>{
+                var transactionMessage = this.handleTransaction();
+                this.setState(
+                  {scannedBookId:'',
+                   scannedStudentId:''})
+              }}>
+          <Text style={styles.submitButtonText}>Submit</Text>
+            </TouchableOpacity>
+          </KeyboardAvoidingView>
         );
       }
     }
@@ -171,10 +225,16 @@ export default class TransactionScreen extends React.Component {
       borderWidth: 1.5,
       borderLeftWidth: 0
     },
-    scanButton:{
-      backgroundColor: "purple",
-      width: 80,
-      borderWidth: 1.5,
-      borderLeftWidth: 0
+    submitButton:{
+      backgroundColor: '#FBC02D',
+      width: 100,
+      height:50
+    },
+    submitButtonText:{
+      padding: 10,
+      textAlign: 'center',
+      fontSize: 20,
+      fontWeight:"bold",
+      color: 'white'
     }
   });
