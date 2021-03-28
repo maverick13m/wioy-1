@@ -13,7 +13,8 @@ export default class TransactionScreen extends React.Component {
         scanned: false,
         scannedBookId: '',
         scannedStudentId:'',
-        buttonState: 'normal'
+        buttonState: 'normal',
+        transactionMessage:"",
       }
     }
 
@@ -55,10 +56,22 @@ export default class TransactionScreen extends React.Component {
       .get()
       .then((doc)=>{
         console.log(doc.data())
-      })
+        var  book =doc.data()
+        if(book.bookAvalibility){
+            this.initiateBookIssue()
+              tran="book Issued"   
+        } 
+        else{
+          this.initiateBookReturn()
+              tran="book Returned" 
+
+        }
+            })
+            this.setState({transactionMessage:tran})
       
     }
 
+    
     render() {
       const hasCameraPermissions = this.state.hasCameraPermissions;
       const scanned = this.state.scanned;
