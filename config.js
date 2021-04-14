@@ -1,4 +1,4 @@
-import * as firebase from firebase;
+import * as firebase from 'firebase';
 require("@firebase/firestore")
 const firebaseConfig = {
     apiKey: "AIzaSyDicfJk_2a0oWiY6-JkzL0Bp_CXmeijNyQ",
@@ -9,5 +9,7 @@ const firebaseConfig = {
     messagingSenderId: "62265965647",
     appId: "1:62265965647:web:3cd7ddad4087df34923e3a"
   };
+  if(!firebase.apps.length) (firebaseConfig) 
+   
   firebase.intializeApp(firebaseConfig)
   export default firebase.firestore()
